@@ -96,10 +96,10 @@ public class ArchiveResource
    * @return
    */
   @GET
-  @Path("zip/{repositoryId}/{revision}.zip")
+  @Path("zip/{repositoryId}.zip")
   @Produces("application/zip")
   public Response getArchive(@PathParam("repositoryId") String repositoryId,
-    @PathParam("revision") String revision, @QueryParam("path") String path)
+    @QueryParam("revision") String revision, @QueryParam("path") String path)
   {
     Repository repository = repositoryManager.get(repositoryId);
 

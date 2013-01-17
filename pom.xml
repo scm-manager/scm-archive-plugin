@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
-  <description>The plugin is able to create a zip archive of a repository.</description>
+  <description>The plugin is able to create a zip archive of a repository revision.</description>
 
   <dependencies>
 

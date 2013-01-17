@@ -29,3 +29,34 @@
  *
  */
 
+Sonia.repository.RepositoryBrowser.prototype.initComponentExt = Sonia.repository.RepositoryBrowser.prototype.initComponent;
+
+Ext.override(Sonia.repository.RepositoryBrowser, {
+  
+  initComponent: function(){
+    this.initComponentExt();
+    var ttbar = this.getTopToolbar();
+    if ( ttbar ){
+      ttbar.addButton({
+        text: 'Download Archive',
+        handler: function(){
+          var url = restUrl + "plugins/archive/zip/" + this.repository.id + '.zip';
+          if (this.revision){
+            url += '?revision' + revision;
+          }
+          if (this.path){
+            if (this.revision){
+              url += '&';
+            } else {
+              url += '?';
+            }
+            url += 'path=' + this.path;
+          }
+          window.open( url );
+        },
+        scope: this
+      });
+    }
+  }
+  
+});
