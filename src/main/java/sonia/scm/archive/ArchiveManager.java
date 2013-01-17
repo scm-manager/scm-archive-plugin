@@ -114,7 +114,8 @@ public class ArchiveManager
 
       RepositoryWalker walker = new RepositoryWalker(service, revision, path);
 
-      walker.walk(new ZipFileObjectProcessor(zos));
+      walker.walk(new ZipFileObjectProcessor(zos,
+        repository.getName().concat("/")));
     }
     finally
     {

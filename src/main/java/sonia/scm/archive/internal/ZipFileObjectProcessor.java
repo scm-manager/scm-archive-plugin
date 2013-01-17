@@ -33,6 +33,8 @@ package sonia.scm.archive.internal;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+
 import sonia.scm.repository.FileObject;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -55,10 +57,12 @@ public class ZipFileObjectProcessor implements FileObjectProcessor
    *
    *
    * @param outputStream
+   * @param namePrefix
    */
-  public ZipFileObjectProcessor(ZipOutputStream outputStream)
+  public ZipFileObjectProcessor(ZipOutputStream outputStream, String namePrefix)
   {
     this.outputStream = outputStream;
+    this.namePrefix = Strings.nullToEmpty(namePrefix);
   }
 
   //~--- methods --------------------------------------------------------------
@@ -76,7 +80,7 @@ public class ZipFileObjectProcessor implements FileObjectProcessor
   @Override
   public OutputStream createOutputStream(FileObject file) throws IOException
   {
-    ZipEntry entry = new ZipEntry(file.getPath());
+    ZipEntry entry = new ZipEntry(namePrefix.concat(file.getPath()));
 
     outputStream.putNextEntry(entry);
 
@@ -90,7 +94,7 @@ public class ZipFileObjectProcessor implements FileObjectProcessor
    *
    *
    * @version        Enter version here..., 13/01/17
-   * @author         Enter your name here...    
+   * @author         Enter your name here...
    */
   private static class ZipEntryOutputStream extends OutputStream
   {
@@ -154,6 +158,9 @@ public class ZipFileObjectProcessor implements FileObjectProcessor
 
 
   //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private String namePrefix;
 
   /** Field description */
   private ZipOutputStream outputStream;
