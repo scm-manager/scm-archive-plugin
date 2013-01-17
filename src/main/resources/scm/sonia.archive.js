@@ -40,7 +40,7 @@ Ext.override(Sonia.repository.RepositoryBrowser, {
       ttbar.addButton({
         text: 'Download Archive',
         handler: function(){
-          var url = restUrl + "plugins/archive/zip/" + this.repository.id + '.zip';
+          var url = restUrl + "plugins/archive/" + this.repository.id + '.zip';
           if (this.revision){
             url += '?revision' + revision;
           }
