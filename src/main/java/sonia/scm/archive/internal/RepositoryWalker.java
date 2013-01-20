@@ -157,9 +157,16 @@ public class RepositoryWalker
       cat.setRevision(revision);
     }
 
-    browse.setDisableCache(true);
-    doWalk(processor, browse, service.getCatCommand(),
-      Strings.nullToEmpty(startPath));
+    //J-
+    browse
+      .setRecursive(true)
+      .setDisableCache(true)
+      .setDisableLastCommit(true)
+      .setDisablePreProcessors(true)
+      .setDisableSubRepositoryDetection(true);
+    //J+
+
+    doWalk(processor, browse, cat, Strings.nullToEmpty(startPath));
   }
 
   /**
@@ -184,16 +191,9 @@ public class RepositoryWalker
 
     for (FileObject file : result)
     {
-      if (!path.equals(file.getPath()))
+      if (!file.isDirectory() &&!path.equals(file.getPath()))
       {
-        if (file.isDirectory())
-        {
-          doWalk(processor, browse, cat, file.getPath());
-        }
-        else
-        {
-          process(processor, cat, file);
-        }
+        process(processor, cat, file);
       }
     }
   }
