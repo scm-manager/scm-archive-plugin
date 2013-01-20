@@ -29,15 +29,17 @@
  *
  */
 
-Sonia.repository.RepositoryBrowser.prototype.initComponentExt = Sonia.repository.RepositoryBrowser.prototype.initComponent;
+Sonia.repository.RepositoryBrowser.prototype.createTopToolbarExt = Sonia.repository.RepositoryBrowser.prototype.createTopToolbar;
 
 Ext.override(Sonia.repository.RepositoryBrowser, {
   
-  initComponent: function(){
-    this.initComponentExt();
-    var ttbar = this.getTopToolbar();
+  createTopToolbar: function(){
+    var ttbar = this.createTopToolbarExt();
     if ( ttbar ){
-      ttbar.addButton({
+      if ( ttbar.items.indexOf('->') < 0 && ttbar.items[0].indexOf('->') < 0){
+        ttbar.items.push('->');
+      }
+      ttbar.items.push({
         text: 'Download Archive',
         handler: function(){
           var url = restUrl + "plugins/archive/" + this.repository.id + '.zip';
@@ -57,6 +59,7 @@ Ext.override(Sonia.repository.RepositoryBrowser, {
         scope: this
       });
     }
+    return ttbar;
   }
   
 });
