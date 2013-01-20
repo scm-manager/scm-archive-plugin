@@ -33,6 +33,9 @@ Sonia.repository.RepositoryBrowser.prototype.createTopToolbarExt = Sonia.reposit
 
 Ext.override(Sonia.repository.RepositoryBrowser, {
   
+  downloadButtonText: 'Download Archive',
+  archiveIcon: 'resources/images/archive.png',
+  
   createTopToolbar: function(){
     var ttbar = this.createTopToolbarExt();
     if ( ttbar ){
@@ -40,7 +43,8 @@ Ext.override(Sonia.repository.RepositoryBrowser, {
         ttbar.items.push('->');
       }
       ttbar.items.push({
-        text: 'Download Archive',
+        text: this.downloadButtonText,
+        icon: this.archiveIcon,
         handler: function(){
           var url = restUrl + "plugins/archive/" + this.repository.id + '.zip';
           if (this.revision){
