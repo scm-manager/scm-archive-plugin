@@ -48,7 +48,7 @@ Ext.override(Sonia.repository.RepositoryBrowser, {
         handler: function(){
           var url = restUrl + "plugins/archive/" + this.repository.id + '.zip';
           if (this.revision){
-            url += '?revision' + revision;
+            url += '?revision=' + this.revision;
           }
           if (this.path){
             if (this.revision){
