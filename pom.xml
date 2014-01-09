@@ -15,6 +15,7 @@
   <version>1.2-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>The plugin is able to create a zip archive of a repository revision.</description>
+  <url>https://bitbucket.org/sdorra/scm-archive-plugin</url>
 
   <dependencies>
 
