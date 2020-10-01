@@ -25,26 +25,28 @@
 package sonia.scm.archive.resources;
 
 import com.google.common.base.Strings;
-
 import sonia.scm.archive.ArchiveManager;
+import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
+import sonia.scm.util.HttpUtil;
+import sonia.scm.util.Util;
 
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
 
-// TODO fix path
-@Path("plugins/archive")
+import static sonia.scm.ContextEntry.ContextBuilder.entity;
+import static sonia.scm.NotFoundException.notFound;
+
+@Path(ArchiveResource.PATH)
 public class ArchiveResource {
+
+  public static final String PATH = "v2/archive";
 
   private final ArchiveManager archiveManager;
   private final RepositoryManager repositoryManager;
@@ -55,35 +57,43 @@ public class ArchiveResource {
     this.repositoryManager = repositoryManager;
   }
 
-  // TODO namespace/name instead of id
   @GET
-  @Path("{repositoryId}.zip")
+  @Path("{namespace}/{name}/{revision}")
   @Produces("application/zip")
-  public Response getArchive(@PathParam("repositoryId") String repositoryId, @QueryParam("revision") String revision, @QueryParam("path") String path) {
-    Repository repository = repositoryManager.get(repositoryId);
+  public Response archive(
+    @PathParam("namespace") String namespace, @PathParam("name") String name,
+    @PathParam("revision") String revision)
+  {
+    return archive(namespace, name, revision, Util.EMPTY_STRING);
+  }
+
+  @GET
+  @Path("{namespace}/{name}/{revision}/{path}")
+  @Produces("application/zip")
+  public Response archive(
+    @PathParam("namespace") String namespace, @PathParam("name") String name,
+    @PathParam("revision") String revision,
+    @PathParam("path") String path)
+  {
+    NamespaceAndName namespaceAndName = new NamespaceAndName(namespace, name);
+    Repository repository = repositoryManager.get(namespaceAndName);
 
     if (repository == null) {
-      // TODO exception with context
-      throw new WebApplicationException(Status.NOT_FOUND);
+      throw notFound(entity(Repository.class, namespaceAndName.toString()));
     }
 
-    StreamingOutput content = new ArchiveStreamingOutput(archiveManager, repository, revision, path);
-    ResponseBuilder builder = Response.ok(content);
-    builder.header("Content-Disposition", createContentDisposition(repository, revision));
-    return builder.build();
+    return Response.ok(new ArchiveStreamingOutput(archiveManager, repository, revision, path))
+      .header("Content-Disposition", createContentDisposition(repository, revision))
+      .build();
   }
 
   private String createContentDisposition(Repository repository, String revision) {
-    // TODO check httputil
-    StringBuilder cd = new StringBuilder("attachment; filename=\"");
-
-    cd.append(repository.getName());
-
+    String name = repository.getName();
     if (!Strings.isNullOrEmpty(revision)) {
-      cd.append(".").append(revision);
+      name += "." + revision;
     }
-
-    return cd.append(".zip\"").toString();
+    name += ".zip";
+    return HttpUtil.createContentDispositionAttachmentHeader(name);
   }
 
 }

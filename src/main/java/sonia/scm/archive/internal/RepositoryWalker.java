@@ -41,61 +41,71 @@ public class RepositoryWalker {
 
   private static final Logger LOG = LoggerFactory.getLogger(RepositoryWalker.class);
 
-  private final RepositoryService service;
-  private final String revision;
-  private final String startPath;
+  private final BrowseCommandBuilder browse;
+  private final CatCommandBuilder cat;
 
-  public RepositoryWalker(RepositoryService service, String revision, String path) {
-    this.service = service;
-    this.revision = revision;
-    this.startPath = path;
+  public RepositoryWalker(RepositoryService service, String revision) {
+    browse = createBrowseCommand(service, revision);
+    cat = createCatCommand(service, revision);
   }
 
-  public void walk(FileObjectProcessor processor) throws IOException {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("start repository walk");
-      Stopwatch sw = Stopwatch.createStarted();
-      doWalk(processor);
-      LOG.debug("finish repository walk in {}", sw.stop());
-    } else {
-      doWalk(processor);
-    }
-  }
-
-  private void doWalk(FileObjectProcessor processor) throws IOException {
-    BrowseCommandBuilder browse = service.getBrowseCommand();
-    CatCommandBuilder cat = service.getCatCommand();
-
+  private BrowseCommandBuilder createBrowseCommand(RepositoryService service, String revision) {
+    BrowseCommandBuilder command = service.getBrowseCommand();
     if (!Strings.isNullOrEmpty(revision)) {
-      browse.setRevision(revision);
-      cat.setRevision(revision);
+      command.setRevision(revision);
     }
-
-    browse
+    return command
       .setRecursive(true)
       .setDisableCache(true)
       .setDisableLastCommit(true)
       .setDisablePreProcessors(true)
-      .setDisableSubRepositoryDetection(true);
-
-    doWalk(processor, browse, cat, Strings.nullToEmpty(startPath));
+      .setDisableSubRepositoryDetection(true)
+      .setLimit(1000);
   }
 
-  private void doWalk(FileObjectProcessor processor, BrowseCommandBuilder browse, CatCommandBuilder cat, String path) throws IOException {
-    LOG.trace("start walk of directory {}", path);
+  private CatCommandBuilder createCatCommand(RepositoryService service, String revision) {
+    CatCommandBuilder command = service.getCatCommand();
+    if (!Strings.isNullOrEmpty(revision)) {
+      command.setRevision(revision);
+    }
+    return command;
+  }
 
-    BrowserResult result = browse.setPath(path).getBrowserResult();
-
-    // TODO check if this is correct
-    // for (FileObject file : result)
-    for (FileObject file : result.getFile().getChildren()) {
-      if (!file.isDirectory() && !path.equals(file.getPath())) {
-        process(processor, cat, file);
-      }
+  public void walk(FileObjectProcessor processor, String startPath) throws IOException {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("start repository walk");
+      Stopwatch sw = Stopwatch.createStarted();
+      doWalk(processor, startPath);
+      LOG.debug("finish repository walk in {}", sw.stop());
+    } else {
+      doWalk(processor, startPath);
     }
   }
 
-  private void process(FileObjectProcessor processor, CatCommandBuilder cat, FileObject file) throws IOException {
+  private void doWalk(FileObjectProcessor processor, String path) throws IOException {
+    LOG.trace("start walk of directory {}", path);
+
+    BrowserResult result = browse.setPath(path).getBrowserResult();
+    process(processor, result.getFile());
+
+  }
+
+  private void process(FileObjectProcessor processor, FileObject file) throws IOException {
+    if (file.isDirectory()) {
+      processDirectory(processor, file);
+    } else {
+      processFile(processor, file);
+    }
+  }
+
+  private void processDirectory(FileObjectProcessor processor, FileObject directory) throws IOException {
+    LOG.trace("process directory {}", directory.getPath());
+    for (FileObject file : directory.getChildren()) {
+        process(processor, file);
+    }
+  }
+
+  private void processFile(FileObjectProcessor processor, FileObject file) throws IOException {
     LOG.trace("process file {}", file.getPath());
     try (OutputStream output = processor.createOutputStream(file)) {
       cat.retriveContent(output, file.getPath());

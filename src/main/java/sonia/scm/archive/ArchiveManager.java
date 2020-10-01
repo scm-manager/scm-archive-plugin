@@ -27,6 +27,7 @@ package sonia.scm.archive;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.archive.internal.FileObjectProcessor;
 import sonia.scm.archive.internal.RepositoryWalker;
 import sonia.scm.archive.internal.ZipFileObjectProcessor;
 import sonia.scm.repository.Repository;
@@ -55,9 +56,10 @@ public class ArchiveManager {
     LOG.debug("create archive for repository: {}, revision: {}, path: {}", repository.getName(), revision, path);
 
     try (RepositoryService service = serviceFactory.create(repository); ZipOutputStream zos = new ZipOutputStream(stream)) {
-      RepositoryWalker walker = new RepositoryWalker(service, revision, path);
+      RepositoryWalker walker = new RepositoryWalker(service, revision);
 
-      walker.walk(new ZipFileObjectProcessor(zos, repository.getName().concat("/")));
+      FileObjectProcessor processor = new ZipFileObjectProcessor(zos, repository.getName().concat("/"));
+      walker.walk(processor, path);
     }
   }
 }
