@@ -1,0 +1,7 @@
+{
+  "scm-archive-plugin": {
+    "button": {
+      "title": "Download directory as zip file"
+    }
+  }
+}

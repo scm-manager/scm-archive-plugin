@@ -22,6 +22,36 @@
  * SOFTWARE.
  */
 
-import {binder} from "@scm-manager/ui-extensions";
+import React from "react";
+import { binder } from "@scm-manager/ui-extensions";
+import { File, Link } from "@scm-manager/ui-types";
 
-binder.bind("", "");
+import styled from "styled-components";
+import { FC } from "react";
+import {useTranslation} from "react-i18next";
+
+const Button = styled.a`
+  width: 50px;
+  color: #33b2e8;
+  &:hover {
+    color: #363636;
+  }
+`;
+
+type Props = {
+  sources: File;
+};
+
+const ArchiveDownload: FC<Props> = ({sources}) => {
+  const [t] = useTranslation("scm-archive-plugin.button.title")
+  const link = sources._links.archive as Link;
+  return (
+    <Button className="button" href={link.href}>
+      <i className="fas fa-file-archive" />
+    </Button>
+  );
+};
+
+
+binder.bind("repos.sources.actionbar", ArchiveDownload, props => !!props.sources?._links.archive);
+
