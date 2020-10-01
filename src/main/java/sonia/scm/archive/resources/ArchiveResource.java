@@ -25,15 +25,22 @@
 package sonia.scm.archive.resources;
 
 import com.google.common.base.Strings;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import sonia.scm.api.v2.resources.ErrorDto;
 import sonia.scm.archive.ArchiveManager;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.util.HttpUtil;
 import sonia.scm.util.Util;
+import sonia.scm.web.VndMediaType;
 
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -43,10 +50,15 @@ import javax.ws.rs.core.Response;
 import static sonia.scm.ContextEntry.ContextBuilder.entity;
 import static sonia.scm.NotFoundException.notFound;
 
+@OpenAPIDefinition(tags = {
+  @Tag(name = "Archive", description = "Archive related endpoints")
+})
 @Path(ArchiveResource.PATH)
 public class ArchiveResource {
 
-  public static final String PATH = "v2/archive";
+  static final String PATH = "v2/archive";
+  private static final String MEDIA_TYPE = "application/zip";
+
 
   private final ArchiveManager archiveManager;
   private final RepositoryManager repositoryManager;
@@ -59,22 +71,80 @@ public class ArchiveResource {
 
   @GET
   @Path("{namespace}/{name}/{revision}")
-  @Produces("application/zip")
-  public Response archive(
+  @Produces(MEDIA_TYPE)
+  @Operation(
+    summary = "Get root archive",
+    description = "Returns all files of the given revision as zip.",
+    tags = "Archive",
+    operationId = "get_root_archive"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MEDIA_TYPE
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(
+    responseCode = "404",
+    description = "repository not found",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  public Response rootArchive(
     @PathParam("namespace") String namespace, @PathParam("name") String name,
-    @PathParam("revision") String revision)
-  {
+    @PathParam("revision") String revision) {
     return archive(namespace, name, revision, Util.EMPTY_STRING);
   }
 
   @GET
   @Path("{namespace}/{name}/{revision}/{path}")
-  @Produces("application/zip")
+  @Produces(MEDIA_TYPE)
+  @Operation(
+    summary = "Get archive",
+    description = "Returns all files of the given directory as zip.",
+    tags = "Archive",
+    operationId = "get_archive"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "success",
+    content = @Content(
+      mediaType = MEDIA_TYPE
+    )
+  )
+  @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
+  @ApiResponse(
+    responseCode = "404",
+    description = "repository not found",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
+  @ApiResponse(
+    responseCode = "500",
+    description = "internal server error",
+    content = @Content(
+      mediaType = VndMediaType.ERROR_TYPE,
+      schema = @Schema(implementation = ErrorDto.class)
+    )
+  )
   public Response archive(
     @PathParam("namespace") String namespace, @PathParam("name") String name,
     @PathParam("revision") String revision,
-    @PathParam("path") String path)
-  {
+    @PathParam("path") String path) {
     NamespaceAndName namespaceAndName = new NamespaceAndName(namespace, name);
     Repository repository = repositoryManager.get(namespaceAndName);
 
