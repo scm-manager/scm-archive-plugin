@@ -46,9 +46,11 @@ const ArchiveDownload: FC<Props> = ({ sources }) => {
   const [t] = useTranslation("plugins");
   const link = sources._links.archive as Link;
   return (
-    <Button className="button" href={link.href} title={t("scm-archive-plugin.button.title")}>
-      <i className="fas fa-file-archive" />
-    </Button>
+    <div className="control">
+      <Button className="button" href={link.href} title={t("scm-archive-plugin.button.title")}>
+        <i className="fas fa-file-archive" />
+      </Button>
+    </div>
   );
 };
 
