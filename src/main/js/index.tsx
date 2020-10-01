@@ -28,7 +28,7 @@ import { File, Link } from "@scm-manager/ui-types";
 
 import styled from "styled-components";
 import { FC } from "react";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const Button = styled.a`
   width: 50px;
@@ -42,16 +42,14 @@ type Props = {
   sources: File;
 };
 
-const ArchiveDownload: FC<Props> = ({sources}) => {
-  const [t] = useTranslation("scm-archive-plugin.button.title")
+const ArchiveDownload: FC<Props> = ({ sources }) => {
+  const [t] = useTranslation("plugins");
   const link = sources._links.archive as Link;
   return (
-    <Button className="button" href={link.href}>
+    <Button className="button" href={link.href} title={t("scm-archive-plugin.button.title")}>
       <i className="fas fa-file-archive" />
     </Button>
   );
 };
 
-
 binder.bind("repos.sources.actionbar", ArchiveDownload, props => !!props.sources?._links.archive);
-
