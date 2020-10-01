@@ -22,14 +22,16 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-    
+
 -->
 <!DOCTYPE plugin SYSTEM "https://download.scm-manager.org/dtd/plugin/2.0.0-01.dtd">
 <plugin>
   <scm-version>2</scm-version>
 
   <information>
-    <displayName>Archive Plugin</displayName>
+    <displayName>Archive</displayName>
+    <author>Cloudogu GmbH</author>
+    <category>Workflow</category>
   </information>
 
   <conditions>
