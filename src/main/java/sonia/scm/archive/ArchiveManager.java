@@ -1,9 +1,9 @@
 /**
  * Copyright (c) 2010, Sebastian Sdorra All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * <p>
  * 1. Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer. 2. Redistributions in
  * binary form must reproduce the above copyright notice, this list of
@@ -11,7 +11,7 @@
  * materials provided with the distribution. 3. Neither the name of SCM-Manager;
  * nor the names of its contributors may be used to endorse or promote products
  * derived from this software without specific prior written permission.
- *
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -22,110 +22,47 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * <p>
  * http://bitbucket.org/sdorra/scm-manager
- *
  */
-
 
 
 package sonia.scm.archive;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import com.google.common.io.Closeables;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.archive.internal.RepositoryWalker;
 import sonia.scm.archive.internal.ZipFileObjectProcessor;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
-//~--- JDK imports ------------------------------------------------------------
-
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import java.util.zip.ZipOutputStream;
 
-/**
- *
- * @author Sebastian Sdorra
- */
 @Singleton
-public class ArchiveManager
-{
+public class ArchiveManager {
 
-  /**
-   * the logger for ArchiveManager
-   */
-  private static final Logger logger =
-    LoggerFactory.getLogger(ArchiveManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ArchiveManager.class);
 
-  //~--- constructors ---------------------------------------------------------
+  private final RepositoryServiceFactory serviceFactory;
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param serviceFactory
-   */
   @Inject
-  public ArchiveManager(RepositoryServiceFactory serviceFactory)
-  {
+  public ArchiveManager(RepositoryServiceFactory serviceFactory) {
     this.serviceFactory = serviceFactory;
   }
 
-  //~--- methods --------------------------------------------------------------
+  public void createArchive(OutputStream stream, Repository repository, String revision, String path) throws IOException {
+    LOG.debug("create archive for repository: {}, revision: {}, path: {}", repository.getName(), revision, path);
 
-  /**
-   * Method description
-   *
-   *
-   * @param stream
-   * @param repository
-   * @param revision
-   * @param path
-   *
-   * @throws IOException
-   * @throws RepositoryException
-   */
-  public void createArchive(OutputStream stream, Repository repository,
-    String revision, String path)
-    throws IOException, RepositoryException
-  {
-    //J-
-    logger.debug("create archive for repository: {}, revision: {}, path: {}",
-      new Object[] { repository.getName(), revision, path });
-    //J+
-
-    RepositoryService service = null;
-    ZipOutputStream zos = new ZipOutputStream(stream);
-
-    try
-    {
-      service = serviceFactory.create(repository);
-
+    try (RepositoryService service = serviceFactory.create(repository); ZipOutputStream zos = new ZipOutputStream(stream)) {
       RepositoryWalker walker = new RepositoryWalker(service, revision, path);
 
-      walker.walk(new ZipFileObjectProcessor(zos,
-        repository.getName().concat("/")));
-    }
-    finally
-    {
-      Closeables.closeQuietly(zos);
-      Closeables.closeQuietly(service);
+      walker.walk(new ZipFileObjectProcessor(zos, repository.getName().concat("/")));
     }
   }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** Field description */
-  private RepositoryServiceFactory serviceFactory;
 }

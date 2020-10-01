@@ -27,91 +27,31 @@
  *
  */
 
-
-
 package sonia.scm.archive.resources;
-
-//~--- non-JDK imports --------------------------------------------------------
-
-import com.google.common.io.Closeables;
 
 import sonia.scm.archive.ArchiveManager;
 import sonia.scm.repository.Repository;
 
-//~--- JDK imports ------------------------------------------------------------
-
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
+public class ArchiveStreamingOutput implements StreamingOutput {
 
-/**
- *
- * @author Sebastian Sdorra
- */
-public class ArchiveStreamingOutput implements StreamingOutput
-{
+  private final ArchiveManager manager;
+  private final Repository repository;
+  private final String revision;
+  private final String path;
 
-  /**
-   * Constructs ...
-   *
-   *
-   * @param manager
-   * @param repository
-   * @param revision
-   * @param path
-   */
-  public ArchiveStreamingOutput(ArchiveManager manager, Repository repository,
-    String revision, String path)
-  {
+  public ArchiveStreamingOutput(ArchiveManager manager, Repository repository, String revision, String path) {
     this.manager = manager;
     this.repository = repository;
     this.revision = revision;
     this.path = path;
   }
 
-  //~--- methods --------------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param output
-   *
-   * @throws IOException
-   * @throws WebApplicationException
-   */
   @Override
-  public void write(OutputStream output)
-    throws IOException, WebApplicationException
-  {
-    try
-    {
-      manager.createArchive(output, repository, revision, path);
-    }
-    catch (Exception ex)
-    {
-      throw new WebApplicationException(ex, Status.INTERNAL_SERVER_ERROR);
-    }
-    finally
-    {
-      Closeables.closeQuietly(output);
-    }
+  public void write(OutputStream output) throws IOException {
+    manager.createArchive(output, repository, revision, path);
   }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** Field description */
-  private ArchiveManager manager;
-
-  /** Field description */
-  private String path;
-
-  /** Field description */
-  private Repository repository;
-
-  /** Field description */
-  private String revision;
 }
