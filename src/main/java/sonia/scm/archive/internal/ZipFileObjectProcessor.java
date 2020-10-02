@@ -24,7 +24,6 @@
 
 package sonia.scm.archive.internal;
 
-import com.google.common.base.Strings;
 import sonia.scm.repository.FileObject;
 
 import java.io.IOException;
@@ -35,16 +34,16 @@ import java.util.zip.ZipOutputStream;
 public class ZipFileObjectProcessor implements FileObjectProcessor {
 
   private final ZipOutputStream outputStream;
-  private final String namePrefix;
+  private final PathBuilder pathBuilder;
 
-  public ZipFileObjectProcessor(ZipOutputStream outputStream, String namePrefix) {
+  public ZipFileObjectProcessor(ZipOutputStream outputStream, PathBuilder pathBuilder) {
     this.outputStream = outputStream;
-    this.namePrefix = Strings.nullToEmpty(namePrefix);
+    this.pathBuilder = pathBuilder;
   }
 
   @Override
   public OutputStream createOutputStream(FileObject file) throws IOException {
-    ZipEntry entry = new ZipEntry(namePrefix.concat(file.getPath()));
+    ZipEntry entry = new ZipEntry(pathBuilder.build(file.getPath()));
     outputStream.putNextEntry(entry);
     return new ZipEntryOutputStream(outputStream);
   }
