@@ -72,14 +72,10 @@ public class RepositoryWalker {
   }
 
   public void walk(FileObjectProcessor processor, String startPath) throws IOException {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("start repository walk");
-      Stopwatch sw = Stopwatch.createStarted();
-      doWalk(processor, startPath);
-      LOG.debug("finish repository walk in {}", sw.stop());
-    } else {
-      doWalk(processor, startPath);
-    }
+    LOG.debug("start repository walk");
+    Stopwatch sw = Stopwatch.createStarted();
+    doWalk(processor, startPath);
+    LOG.debug("finish repository walk in {}", sw.stop());
   }
 
   private void doWalk(FileObjectProcessor processor, String path) throws IOException {
