@@ -60,7 +60,7 @@ public class RepositoryWalker {
       .setDisableLastCommit(true)
       .setDisablePreProcessors(true)
       .setDisableSubRepositoryDetection(true)
-      .setLimit(1000);
+      .setLimit(100000);
   }
 
   private CatCommandBuilder createCatCommand(RepositoryService service, String revision) {
