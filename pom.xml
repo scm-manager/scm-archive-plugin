@@ -36,7 +36,7 @@
   </parent>
 
   <artifactId>scm-archive-plugin</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.0.0</version>
   <packaging>smp</packaging>
   <url>https://github.com/scm-manager/scm-archive-plugin</url>
   <description>Create a zip archive of a repository revision.</description>
