@@ -33,7 +33,7 @@ dependencies {
 scmPlugin {
   scmVersion = "2.0.0"
   displayName = "Archive"
-  description = "Create a zip archive of a repository revision"
+  description = "Creates a zip archive of a repository revision"
   author = "Cloudogu GmbH"
   category = "Workflow"
 
