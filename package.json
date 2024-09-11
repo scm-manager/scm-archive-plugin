@@ -2,7 +2,7 @@
     "name": "@scm-manager/scm-archive-plugin",
     "private": true,
     "version": "2.0.2-SNAPSHOT",
-    "license": "MIT",
+    "license": "AGPLv3",
     "main": "./src/main/js/index.tsx",
     "scripts": {
         "build": "plugin-scripts build",
@@ -10,7 +10,7 @@
         "postinstall": "plugin-scripts postinstall"
     },
     "dependencies": {
-        "@scm-manager/ui-plugins": "2.26.0",
+        "@scm-manager/ui-plugins": "3.0.0",
         "@scm-manager/ui-components": "^2.26.0",
         "@scm-manager/ui-extensions": "^2.26.0",
         "classnames": "^2.2.6",
