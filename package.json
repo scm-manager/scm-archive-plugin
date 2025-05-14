@@ -29,7 +29,7 @@
         "@scm-manager/ui-buttons": "3.4.1",
         "@scm-manager/ui-overlays": "3.4.1",
         "@scm-manager/ui-layout": "3.4.1",
-        "react-query": "^3.25.1"
+        "@tanstack/react-query": "^4.0.5"
     },
     "babel": {
         "presets": [
