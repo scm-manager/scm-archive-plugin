@@ -15,14 +15,14 @@
  */
 
 plugins {
-  id 'org.scm-manager.smp' version '0.17.0'
+  id 'org.scm-manager.smp' version '0.20.0-alpha2'
 }
 
 dependencies {
 }
 
 scmPlugin {
-  scmVersion = "3.0.0"
+  scmVersion = "4.0.0-REACT19-SNAPSHOT"
   displayName = "Archive"
   description = "Creates a zip archive of a repository revision"
   author = "Cloudogu GmbH"
