@@ -21,7 +21,6 @@ import { File, Link } from "@scm-manager/ui-types";
 import styled from "styled-components";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
-import {useIndexLink} from "@scm-manager/ui-api";
 
 const Button = styled.a`
   width: 50px;
@@ -44,4 +43,4 @@ const ArchiveDownload: FC<Props> = ({ sources }) => {
   );
 };
 
-binder.bind("repos.sources.actionbar", ArchiveDownload, () => !!useIndexLink("archive"));
+binder.bind("repos.sources.actionbar", ArchiveDownload, (props: Props) => !!props.sources?._links.archive);
