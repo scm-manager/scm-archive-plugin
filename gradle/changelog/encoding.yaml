@@ -1,0 +1,2 @@
+- type: fixed
+  description: Encoding of filenames in ZIP archive for Linux unzip

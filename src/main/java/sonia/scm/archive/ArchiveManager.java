@@ -17,6 +17,9 @@
 package sonia.scm.archive;
 
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.archive.internal.FileObjectProcessor;
@@ -27,11 +30,8 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.zip.ZipOutputStream;
 
 @Singleton
 public class ArchiveManager {
@@ -48,7 +48,7 @@ public class ArchiveManager {
   public void createArchive(OutputStream stream, Repository repository, String revision, String path) throws IOException {
     LOG.debug("create archive for repository: {}, revision: {}, path: {}", repository.getName(), revision, path);
 
-    try (RepositoryService service = serviceFactory.create(repository); ZipOutputStream zos = new ZipOutputStream(stream)) {
+    try (RepositoryService service = serviceFactory.create(repository); ZipArchiveOutputStream zos = new ZipArchiveOutputStream(stream)) {
       RepositoryWalker walker = new RepositoryWalker(service, revision);
 
       PathBuilder pathBuilder = PathBuilder.create(repository, path);

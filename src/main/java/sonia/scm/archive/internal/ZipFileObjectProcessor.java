@@ -16,35 +16,41 @@
 
 package sonia.scm.archive.internal;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import sonia.scm.repository.FileObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS;
 
 public class ZipFileObjectProcessor implements FileObjectProcessor {
 
-  private final ZipOutputStream outputStream;
+  private final ZipArchiveOutputStream outputStream;
   private final PathBuilder pathBuilder;
 
-  public ZipFileObjectProcessor(ZipOutputStream outputStream, PathBuilder pathBuilder) {
+  public ZipFileObjectProcessor(ZipArchiveOutputStream outputStream, PathBuilder pathBuilder) {
     this.outputStream = outputStream;
     this.pathBuilder = pathBuilder;
+    outputStream.setEncoding(StandardCharsets.UTF_8.name());
+    outputStream.setUseLanguageEncodingFlag(true);
+    outputStream.setCreateUnicodeExtraFields(ALWAYS);
   }
 
   @Override
   public OutputStream createOutputStream(FileObject file) throws IOException {
-    ZipEntry entry = new ZipEntry(pathBuilder.build(file.getPath()));
-    outputStream.putNextEntry(entry);
+    ZipArchiveEntry entry = new ZipArchiveEntry(pathBuilder.build(file.getPath()));
+    outputStream.putArchiveEntry(entry);
     return new ZipEntryOutputStream(outputStream);
   }
 
   private static class ZipEntryOutputStream extends OutputStream {
 
-    private final ZipOutputStream delegate;
+    private final ZipArchiveOutputStream delegate;
 
-    private ZipEntryOutputStream(ZipOutputStream delegate) {
+    private ZipEntryOutputStream(ZipArchiveOutputStream delegate) {
       this.delegate = delegate;
     }
 
@@ -65,7 +71,7 @@ public class ZipFileObjectProcessor implements FileObjectProcessor {
 
     @Override
     public void close() throws IOException {
-      delegate.closeEntry();
+      delegate.closeArchiveEntry();
     }
 
   }

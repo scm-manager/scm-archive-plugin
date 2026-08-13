@@ -15,14 +15,15 @@
  */
 
 plugins {
-  id 'org.scm-manager.smp' version '0.17.0'
+  id 'org.scm-manager.smp' version '0.20.0'
 }
 
 dependencies {
+  implementation "org.apache.commons:commons-compress:1.28.0"
 }
 
 scmPlugin {
-  scmVersion = "3.0.0"
+  scmVersion = "3.7.0"
   displayName = "Archive"
   description = "Creates a zip archive of a repository revision"
   author = "Cloudogu GmbH"
