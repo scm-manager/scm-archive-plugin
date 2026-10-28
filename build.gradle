@@ -15,11 +15,13 @@
  */
 
 plugins {
-  id 'org.scm-manager.smp' version '0.20.0'
+  id 'org.scm-manager.smp' version '0.21.0'
 }
 
 dependencies {
   implementation "org.apache.commons:commons-compress:1.28.0"
+  testImplementation "net.bytebuddy:byte-buddy:1.17.5"
+  testImplementation "net.bytebuddy:byte-buddy-agent:1.17.5"
 }
 
 scmPlugin {
