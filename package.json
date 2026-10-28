@@ -10,20 +10,20 @@
     "postinstall": "plugin-scripts postinstall"
   },
   "dependencies": {
-    "@scm-manager/ui-api": "4.0.0-REACT19-20251102-074646",
-    "@scm-manager/ui-core": "4.0.0-REACT19-20251102-074646",
-    "@scm-manager/ui-components": "4.0.0-REACT19-20251102-074646",
-    "@scm-manager/ui-extensions": "4.0.0-REACT19-20251102-074646",
-    "@scm-manager/ui-plugins": "4.0.0-REACT19-20251102-074646",
+    "@scm-manager/ui-api": "4.0.0-20260928-094717",
+    "@scm-manager/ui-core": "4.0.0-20260928-094717",
+    "@scm-manager/ui-components": "4.0.0-20260928-094717",
+    "@scm-manager/ui-extensions": "4.0.0-20260928-094717",
+    "@scm-manager/ui-plugins": "4.0.0-20260928-094717",
     "@tanstack/react-query": "^5.90.6",
-    "classnames": "^2.3.1",
+    "classnames": "^2.3.4",
     "query-string": "6.14.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.33.1",
     "react-i18next": "11",
-    "react-router": "^7.9.1",
-    "react-router-dom": "^7.9.1",
+    "react-router": "^7.13.0",
+    "react-router-dom": "^7.13.0",
     "styled-components": "^6.1.19"
   },
   "babel": {
@@ -40,12 +40,14 @@
     "@scm-manager/eslint-config": "^2.18.2",
     "@scm-manager/plugin-scripts": "^1.6.1",
     "@scm-manager/prettier-config": "^2.12.0",
-    "@scm-manager/tsconfig": "^2.13.0",
-    "@scm-manager/ui-types": "4.0.0-REACT19-20251102-074646",
+    "@scm-manager/tsconfig": "^3.0.0-alpha1",
+    "@scm-manager/ui-types": "4.0.0-20260928-094717",
     "@types/classnames": "^2.3.1",
     "@types/i18next": "^13.0.0",
     "@types/react": "^19.1.1",
-    "@vitest/coverage-v8": "^3.2.4",
-    "vitest": "^3.2.4"
+    "@vitest/coverage-v8": "^4.0.18",
+    "vitest": "^4.0.18",
+    "@vitest/web-worker": "^4.0.18",
+    "jsdom": "^29.1.1"
   }
 }
