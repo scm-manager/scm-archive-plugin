@@ -43,4 +43,4 @@ const ArchiveDownload: FC<Props> = ({ sources }) => {
   );
 };
 
-binder.bind("repos.sources.actionbar", ArchiveDownload, props => !!props.sources?._links.archive);
+binder.bind("repos.sources.actionbar", ArchiveDownload, (props: Props) => !!props.sources?._links.archive);

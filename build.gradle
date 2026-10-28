@@ -25,7 +25,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "3.7.0"
+  scmVersion = "4.0.0-SNAPSHOT"
   displayName = "Archive"
   description = "Creates a zip archive of a repository revision"
   author = "Cloudogu GmbH"
